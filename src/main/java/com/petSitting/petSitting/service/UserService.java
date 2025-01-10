@@ -14,16 +14,15 @@ public class UserService {
     private UserRepository userRepository;
 
     public User createUser(User user) throws Exception {
-        try{
-          User existedUser = userRepository.findByEmailId(user.getEmailId());
-          if(existedUser!=null){
-              throw new Exception("Email already exists");
-          }
+        try {
+            User existedUser = userRepository.findByEmailId(user.getEmailId());
+            if (existedUser != null) {
+                throw new Exception("Email already exists");
+            }
 
             userRepository.save(user);
             return user;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("something went wrong while saving user");
         }
     }
@@ -33,9 +32,9 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User getUserByEmail(String emailId){
-        User user =  userRepository.findByEmailId(emailId);
-        if(user == null){
+    public User getUserByEmail(String emailId) {
+        User user = userRepository.findByEmailId(emailId);
+        if (user == null) {
             throw new RuntimeException("User not found");
         }
         return user;
@@ -46,7 +45,6 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
         User existingUser = getUserById(id);
-
 
 
         // Sanitize and update the fields
@@ -78,7 +76,6 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
-
 
 
 }

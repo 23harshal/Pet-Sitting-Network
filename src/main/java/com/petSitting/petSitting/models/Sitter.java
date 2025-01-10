@@ -20,8 +20,8 @@ public class Sitter {
 
     @Column(nullable = false)
     private String emailId;
-    @Column(nullable = false)
-    private int phoneNumber;
+    @Column(nullable = false , length = 10)
+    private Long phoneNumber;
 
     @Column(nullable = false)
     private String password;
@@ -36,7 +36,7 @@ public class Sitter {
     public Sitter() {
     }
 
-    public Sitter(String firstName, String emailId, String password, Map<String, BigDecimal> services, String bio, String address, String lastName, int phoneNumber) {
+    public Sitter(String firstName, String emailId, String password, Map<String, BigDecimal> services, String bio, String address, String lastName, Long phoneNumber) {
         this.firstName = firstName;
         this.emailId = emailId;
         this.password = password;
@@ -79,11 +79,11 @@ public class Sitter {
         this.emailId = emailId;
     }
 
-    public int getPhoneNumber() {
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
