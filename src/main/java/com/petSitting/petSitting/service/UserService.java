@@ -3,6 +3,8 @@ package com.petSitting.petSitting.service;
 import com.petSitting.petSitting.models.User;
 import com.petSitting.petSitting.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,12 +45,31 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found");
         }
-        User user = getUserById(id);
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setPhoneNumber(updatedUser.getPhoneNumber());
-        user.setPassword(updatedUser.getPassword());
-        return userRepository.save(user);
+        User existingUser = getUserById(id);
+
+
+
+        // Sanitize and update the fields
+        if (updatedUser.getFirstName() != null && !updatedUser.getFirstName().trim().isEmpty()) {
+            existingUser.setFirstName(updatedUser.getFirstName().trim());
+        }
+
+        if (updatedUser.getLastName() != null && !updatedUser.getLastName().trim().isEmpty()) {
+            existingUser.setLastName(updatedUser.getLastName().trim());
+        }
+
+        if (updatedUser.getEmailId() != null && !updatedUser.getEmailId().trim().isEmpty()) {
+            existingUser.setEmailId(updatedUser.getEmailId().trim());
+        }
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().trim().isEmpty()) {
+            existingUser.setPassword(updatedUser.getPassword().trim());
+        }
+
+        if (updatedUser.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+        return userRepository.save(existingUser);
     }
 
     public void deleteUser(Long id) {

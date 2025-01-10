@@ -1,5 +1,6 @@
 package com.petSitting.petSitting.models;
 
+import com.petSitting.petSitting.utils.MapToJsonConverter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
@@ -28,6 +29,8 @@ public class Sitter {
     private String address;
     private String bio;
 
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = MapToJsonConverter.class)
     private Map<String , BigDecimal> services;
 
     public Sitter() {
