@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -31,7 +32,7 @@ public class Sitter {
 
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MapToJsonConverter.class)
-    private Map<String , BigDecimal> services;
+    private Map<String , BigDecimal> services = new HashMap<>();
 
     public Sitter() {
     }

@@ -1,5 +1,6 @@
 package com.petSitting.petSitting.controllers;
 
+import com.petSitting.petSitting.dto.ServiceRequest;
 import com.petSitting.petSitting.models.Sitter;
 import com.petSitting.petSitting.service.SitterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,4 +69,39 @@ public class SitterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PatchMapping("/{id}/add-service")
+    public ResponseEntity<?> addService(@PathVariable Long id , @RequestBody ServiceRequest serviceRequest){
+        try {
+            Sitter updated = sitterService.addService(id, serviceRequest);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{id}/remove-service")
+    public ResponseEntity<?> removeService(@PathVariable Long id, @RequestBody String serviceName){
+        try {
+            Sitter updated = sitterService.removeService(id, serviceName);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{sitterId}/service/update")
+    public ResponseEntity<?> updateService(
+            @PathVariable Long sitterId,
+            @RequestParam String oldServiceName,
+            @RequestBody ServiceRequest updatedService) {
+        try{
+            Sitter updatedSitter = sitterService.updateService(sitterId, oldServiceName, updatedService);
+            return ResponseEntity.ok(updatedSitter);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }
