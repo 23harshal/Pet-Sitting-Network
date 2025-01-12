@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/sitters")
 public class SitterController {
@@ -70,38 +72,28 @@ public class SitterController {
         }
     }
 
-    @PatchMapping("/{id}/add-service")
-    public ResponseEntity<?> addService(@PathVariable Long id , @RequestBody ServiceRequest serviceRequest){
-        try {
-            Sitter updated = sitterService.addService(id, serviceRequest);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @PatchMapping("/{id}/remove-service")
-    public ResponseEntity<?> removeService(@PathVariable Long id, @RequestBody String serviceName){
-        try {
-            Sitter updated = sitterService.removeService(id, serviceName);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/{sitterId}/service/update")
-    public ResponseEntity<?> updateService(
+    @PatchMapping("/{sitterId}/services/add")
+    public ResponseEntity<Sitter> addMultipleServices(
             @PathVariable Long sitterId,
-            @RequestParam String oldServiceName,
-            @RequestBody ServiceRequest updatedService) {
-        try{
-            Sitter updatedSitter = sitterService.updateService(sitterId, oldServiceName, updatedService);
-            return ResponseEntity.ok(updatedSitter);
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+            @RequestBody List<ServiceRequest> servicesToAdd) {
+        Sitter updatedSitter = sitterService.addMultipleServices(sitterId, servicesToAdd);
+        return ResponseEntity.ok(updatedSitter);
+    }
+
+    @PatchMapping("/{sitterId}/services/remove")
+    public ResponseEntity<Sitter> removeMultipleServices(
+            @PathVariable Long sitterId,
+            @RequestBody List<String> servicesToRemove) {
+        Sitter updatedSitter = sitterService.removeMultipleServices(sitterId, servicesToRemove);
+        return ResponseEntity.ok(updatedSitter);
+    }
+
+    @PutMapping("/{sitterId}/services/update")
+    public ResponseEntity<Sitter> updateMultipleServices(
+            @PathVariable Long sitterId,
+            @RequestBody List<ServiceRequest> servicesToUpdate) {
+        Sitter updatedSitter = sitterService.updateMultipleServices(sitterId, servicesToUpdate);
+        return ResponseEntity.ok(updatedSitter);
     }
 
 }

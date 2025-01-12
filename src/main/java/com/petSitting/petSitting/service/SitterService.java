@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -91,52 +92,71 @@ public class SitterService {
         return sitterRepository.save(existingSitter);
     }
 
-    public Sitter addService(Long sitterId , ServiceRequest serviceRequest){
-        Sitter existingSItter = sitterRepository.findById(sitterId)
-               .orElseThrow(() -> new RuntimeException("Sitter not found with ID: " + sitterId));
-        Map<String , BigDecimal> services  = existingSItter.getServices();
-        if(services == null){
-            services = new HashMap<>();
-        }
-        services.put(serviceRequest.getServiceName() , serviceRequest.getServicePrice());
-        existingSItter.setServices(services);
-        return sitterRepository.save(existingSItter);
-    }
-    public Sitter removeService(Long sitterId, String serviceName){
-        Sitter existingSItter = sitterRepository.findById(sitterId)
-               .orElseThrow(() -> new RuntimeException("Sitter not found with ID: " + sitterId));
-        Map<String, BigDecimal> services = existingSItter.getServices();
-        if (services == null || !services.containsKey(serviceName)) {
-            throw new RuntimeException("Service not found: " + serviceName);
-        }
-        services.remove(serviceName);
-        existingSItter.setServices(services);
-        return sitterRepository.save(existingSItter);
-    }
-
-    // Update a service
-    public Sitter updateService(Long sitterId, String oldServiceName, ServiceRequest updatedService) {
+    public Sitter addMultipleServices(Long sitterId, List<ServiceRequest> servicesToAdd) {
         Sitter existingSitter = sitterRepository.findById(sitterId)
                 .orElseThrow(() -> new RuntimeException("Sitter not found with ID: " + sitterId));
 
         Map<String, BigDecimal> services = existingSitter.getServices();
 
-        if (services == null || !services.containsKey(oldServiceName)) {
-            throw new RuntimeException("Service not found: " + oldServiceName);
+        if (services == null) {
+            services = new HashMap<>();
         }
 
-        // Update service name
-        if (!oldServiceName.equals(updatedService.getServiceName())) {
-            BigDecimal oldPrice = services.remove(oldServiceName);
-            services.put(updatedService.getServiceName(), updatedService.getServicePrice() != null ? updatedService.getServicePrice() : oldPrice);
-        } else {
-            // Update service price only if a new price is provided
-            services.put(oldServiceName, updatedService.getServicePrice() != null ? updatedService.getServicePrice() : services.get(oldServiceName));
+        for (ServiceRequest service : servicesToAdd) {
+            services.put(service.getServiceName(), service.getServicePrice());
         }
 
         existingSitter.setServices(services);
         return sitterRepository.save(existingSitter);
     }
+
+    public Sitter removeMultipleServices(Long sitterId, List<String> servicesToRemove) {
+        Sitter existingSitter = sitterRepository.findById(sitterId)
+                .orElseThrow(() -> new RuntimeException("Sitter not found with ID: " + sitterId));
+
+        Map<String, BigDecimal> services = existingSitter.getServices();
+
+        if (services == null) {
+            throw new RuntimeException("No services available to remove");
+        }
+
+        for (String serviceName : servicesToRemove) {
+            if (services.containsKey(serviceName)) {
+                services.remove(serviceName);
+            } else {
+                throw new RuntimeException("Service not found: " + serviceName);
+            }
+        }
+
+        existingSitter.setServices(services);
+        return sitterRepository.save(existingSitter);
+    }
+
+
+    // Update a service
+    public Sitter updateMultipleServices(Long sitterId, List<ServiceRequest> servicesToUpdate) {
+        Sitter existingSitter = sitterRepository.findById(sitterId)
+                .orElseThrow(() -> new RuntimeException("Sitter not found with ID: " + sitterId));
+
+        Map<String, BigDecimal> services = existingSitter.getServices();
+
+        if (services == null) {
+            services = new HashMap<>();
+        }
+
+        for (ServiceRequest service : servicesToUpdate) {
+            if (services.containsKey(service.getServiceName())) {
+                // Update the service price
+                services.put(service.getServiceName(), service.getServicePrice());
+            } else {
+                throw new RuntimeException("Service not found: " + service.getServiceName());
+            }
+        }
+
+        existingSitter.setServices(services);
+        return sitterRepository.save(existingSitter);
+    }
+
 
 
     public void deleteSitter(Long id) {
