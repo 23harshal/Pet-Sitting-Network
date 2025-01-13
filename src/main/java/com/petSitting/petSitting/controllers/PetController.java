@@ -1,5 +1,6 @@
 package com.petSitting.petSitting.controllers;
 
+import com.petSitting.petSitting.dto.PetDTO;
 import com.petSitting.petSitting.models.Pet;
 import com.petSitting.petSitting.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,15 @@ public class PetController {
 
     // Get a pet by ID
     @GetMapping("/{petId}")
-    public ResponseEntity<Pet> getPetById(@PathVariable Long petId) {
-        Pet pet = petService.getPetById(petId);
+    public ResponseEntity<PetDTO> getPetById(@PathVariable Long petId) {
+        PetDTO pet = petService.getPetById(petId);
         return ResponseEntity.ok(pet);
     }
 
     // Get all pets by owner ID
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<Pet>> getPetsByOwner(@PathVariable Long ownerId) {
-        List<Pet> pets = petService.getPetsByOwner(ownerId);
+    public ResponseEntity<List<PetDTO>> getPetsByOwner(@PathVariable Long ownerId) {
+        List<PetDTO> pets = petService.getPetsByOwner(ownerId);
         return ResponseEntity.ok(pets);
     }
 
