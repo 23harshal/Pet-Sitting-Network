@@ -1,6 +1,7 @@
 package com.petSitting.petSitting.controllers;
 
 
+import com.petSitting.petSitting.dto.UserDTO;
 import com.petSitting.petSitting.models.User;
 import com.petSitting.petSitting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -24,9 +26,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         try{
-            User user = userService.getUserById(id);
+            //Optional<UserDTO> user = Optional.ofNullable(userService.getUserById(id));
+            UserDTO user = userService.getUserById(id);
             return ResponseEntity.ok(user);
         }
         catch (Exception e){

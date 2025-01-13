@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -33,6 +35,12 @@ public class Sitter {
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MapToJsonConverter.class)
     private Map<String , BigDecimal> services = new HashMap<>();
+
+    @Embedded
+    private WorkingSchedule workingSchedule;
+
+    @OneToMany(mappedBy = "sitter", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TimeSlot> timeSlots = new ArrayList<>();
 
     public Sitter() {
     }

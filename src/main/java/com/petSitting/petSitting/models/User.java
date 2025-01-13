@@ -3,6 +3,9 @@ package com.petSitting.petSitting.models;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class User {
     @Id
@@ -18,15 +21,41 @@ public class User {
     @Column(nullable = true , unique = true, length = 10)
     private Long phoneNumber;
 
+    @OneToMany(mappedBy = "bookedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TimeSlot> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pet> pets = new ArrayList<>();
+
     public User() {
     }
 
-    public User(String firstName, String lastName, String emailId, String password, Long phoneNumber) {
+    public User(Long id, String firstName, String lastName, String emailId, String password, Long phoneNumber, List<TimeSlot> bookings, List<Pet> pets) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.bookings = bookings;
+        this.pets = pets;
+    }
+
+
+    public List<TimeSlot> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<TimeSlot> bookings) {
+        this.bookings = bookings;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
     }
 
     public String getEmailId() {

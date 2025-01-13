@@ -1,11 +1,20 @@
 package com.petSitting.petSitting.service;
 
+import com.petSitting.petSitting.dto.BookingDTO;
+import com.petSitting.petSitting.dto.PetDTO;
+import com.petSitting.petSitting.dto.UserDTO;
+import com.petSitting.petSitting.models.Pet;
+import com.petSitting.petSitting.models.TimeSlot;
 import com.petSitting.petSitting.models.User;
 import com.petSitting.petSitting.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -27,9 +36,38 @@ public class UserService {
         }
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDTO getUserById(Long id) {
+        try{
+            Optional<User> optionalUser = userRepository.findById(id);
+            if(optionalUser.isPresent()){
+                User user = optionalUser.get();
+                List<PetDTO> petDTOS = new ArrayList<>();
+                for(Pet pet : user.getPets()){
+                    petDTOS.add(new PetDTO(pet.getId() , pet.getPetName()));
+                }
+                List<BookingDTO> bookingDTOS = new ArrayList<>();
+                if(!user.getBookings().isEmpty()){
+                    for(TimeSlot timeSlot : user.getBookings()){
+                        bookingDTOS.add(new BookingDTO(timeSlot.getId(), timeSlot.getDate(),
+                                timeSlot.getStartTime(), timeSlot.getEndTime(), timeSlot.isBooked()));
+                    }
+                }
+                return new UserDTO(
+                        user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmailId(),
+                        petDTOS,
+                        bookingDTOS
+                );
+            }
+            else {
+                throw new RuntimeException("User not found");
+            }
+        }
+        catch (Exception e){
+            throw new RuntimeException("internal server error didnt get user",e);
+        }
     }
 
     public User getUserByEmail(String emailId) {
@@ -44,7 +82,9 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found");
         }
-        User existingUser = getUserById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        User existingUser = optionalUser.get();
 
 
         // Sanitize and update the fields
