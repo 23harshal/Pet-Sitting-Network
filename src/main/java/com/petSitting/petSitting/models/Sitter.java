@@ -45,6 +45,22 @@ public class Sitter {
     public Sitter() {
     }
 
+    public WorkingSchedule getWorkingSchedule() {
+        return workingSchedule;
+    }
+
+    public void setWorkingSchedule(WorkingSchedule workingSchedule) {
+        this.workingSchedule = workingSchedule;
+    }
+
+    public List<TimeSlot> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public void setTimeSlots(List<TimeSlot> timeSlots) {
+        this.timeSlots = timeSlots;
+    }
+
     public Sitter(String firstName, String emailId, String password, Map<String, BigDecimal> services, String bio, String address, String lastName, Long phoneNumber) {
         this.firstName = firstName;
         this.emailId = emailId;

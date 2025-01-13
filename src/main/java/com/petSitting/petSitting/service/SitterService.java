@@ -2,6 +2,7 @@ package com.petSitting.petSitting.service;
 
 import com.petSitting.petSitting.dto.ServiceRequest;
 import com.petSitting.petSitting.models.Sitter;
+import com.petSitting.petSitting.models.WorkingSchedule;
 import com.petSitting.petSitting.repo.SitterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,6 +156,13 @@ public class SitterService {
 
         existingSitter.setServices(services);
         return sitterRepository.save(existingSitter);
+    }
+    public Sitter updateWorkingSchedule(Long sitterId, WorkingSchedule schedule) {
+        Sitter sitter = sitterRepository.findById(sitterId)
+                .orElseThrow(() -> new RuntimeException("Sitter not found"));
+
+        sitter.setWorkingSchedule(schedule);
+        return sitterRepository.save(sitter);
     }
 
 
